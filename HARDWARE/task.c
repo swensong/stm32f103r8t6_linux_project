@@ -43,6 +43,8 @@ void task_init(void)
 
     tim2_init();                /* 定时器2的初始化 */
 
+    tim4_init();                /* 定时器4的初始化 */
+
     usart1_init(115200);        /* 串口的初始化 */
 
     usart1_send_str(buf); /* 发送初始化成功的串口字符 */
