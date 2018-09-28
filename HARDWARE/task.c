@@ -16,6 +16,7 @@
 #include "timer.h"
 #include "led.h"
 #include "adc_dma.h"
+#include "systick.h"
 
 /**
  * 用于main函数的初始化
@@ -34,22 +35,18 @@
 void task_init(void)
 {
     u8 buf[] = "init success!\r\n";
-    u8 send_adc_buf[3] = {0};
-    u16 adc_data = 0;
 
     led_init();                 /* LED灯的初始化 */
     adc1_init();                /* ADC采集数据的初始化 */
+
+    /* systick_init(); */
 
     tim2_init();                /* 定时器2的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
 
-    adc_data = get_adc1_value();
-    send_adc_buf[0] = (u8)(adc_data >> 8);
-    send_adc_buf[1] = (u8)(adc_data);
-
     usart1_send_str(buf); /* 发送初始化成功的串口字符 */
-    usart1_send_str_len(send_adc_buf, 2);
+
 }
 
 /**

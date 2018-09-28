@@ -11,6 +11,7 @@
  *   version: 2018.9.28
  */
 #include "adc_dma.h"
+#include "usart1.h"
 
 #define ADC1_DR_Address    ((u32)0x40012400+0x4c)
 
@@ -130,4 +131,16 @@ u16 get_adc1_value(void)
     /* ADC_SoftwareStartConvCmd(ADC1, ENABLE); */
 
     return ADC_ConvertedValue;
+}
+
+/* 测量ADC采集数据的测试程序 */
+void adc_test(void)
+{
+    u8 send_adc_buf[3] = {0};
+    u16 adc_data = 0;
+
+    adc_data = get_adc1_value();
+    send_adc_buf[0] = (u8)(adc_data >> 8);
+    send_adc_buf[1] = (u8)(adc_data);
+    usart1_send_str_len(send_adc_buf, 2);
 }

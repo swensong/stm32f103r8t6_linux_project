@@ -8,4 +8,6 @@
 void adc1_init(void);
 u16 get_adc1_value(void);
 
+void adc_test(void);
+
 #endif
