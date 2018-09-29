@@ -38,16 +38,16 @@ void tim4_init(void)
     TIM4_GPIO_Configuration();
     TIM4_NVIC_Configuration();
 
-    TIM_ICInitStructure.TIM_Channel = TIM_Channel_3;
+    TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
     TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
     TIM_ICInitStructure.TIM_ICFilter = 0x00;
-    TIM_PWMIConfig(TIM2, &TIM_ICInitStructure);
+    TIM_PWMIConfig(TIM4, &TIM_ICInitStructure);
     /* 选择TIM4输入触发源；TIM经滤波定时器输入2 */
-    TIM_SelectInputTrigger(TIM4, TIM_TS_TI2FP2);
+    TIM_SelectInputTrigger(TIM4, TIM_TS_ETRF);
     /* 选择从机模式：复位模式 */
-    TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_Reset);
+    TIM_SelectSlaveMode(TIM4, TIM_SlaveMode_Reset);
     /* 开启复位模式 */
     TIM_SelectMasterSlaveMode(TIM4, TIM_MasterSlaveMode_Enable);
     /* 开启CC2中断 */
@@ -67,9 +67,9 @@ void TIM4_IRQHandler(void)
 {
     usart1_send_str("in interrrupt!");
 
-    if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
-    {
+    /* if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET) */
+    /* { */
 
-        TIM_ClearITPendingBit(TIM4, TIM_FLAG_Update);
-    }
+    TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
+    /* } */
 }

@@ -13,10 +13,17 @@
 #include "task.h"
 
 #include "usart1.h"
-#include "timer.h"
+/* #include "timer.h" */
+#include "timer2.h"
 #include "led.h"
 #include "adc_dma.h"
 #include "systick.h"
+
+__IO uint32_t TimeDisplay;
+__IO uint16_t IC2Value;
+__IO uint16_t DutyCycle;
+__IO uint32_t Frequency;
+
 
 /**
  * 用于main函数的初始化
@@ -41,9 +48,10 @@ void task_init(void)
 
     /* systick_init(); */
 
-    tim2_init();                /* 定时器2的初始化 */
+    /* tim2_init();               */  /* 定时器2的初始化 */
+    tim2_init();                /* 捕获初始化 */
 
-    tim4_init();                /* 定时器4的初始化 */
+    /* tim4_init();                */ /* 定时器4的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
 
