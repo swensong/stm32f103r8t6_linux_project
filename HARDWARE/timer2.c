@@ -1,4 +1,5 @@
 #include "timer2.h"
+#include "usart1.h"
 
 void tim2_init(void)
 {

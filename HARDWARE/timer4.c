@@ -9,11 +9,11 @@ void TIM4_NVIC_Configuration(void)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+//    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn; /* 选择定时器4中断 */
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1; /* 抢占式中断优先级0 */
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;        /* 响应式中断优先级0 */
+    /* NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1; /\* 抢占式中断优先级0 *\/ */
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;        /* 响应式中断优先级0 */
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;           /* 中断使能 */
 
     NVIC_Init(&NVIC_InitStructure);
@@ -26,13 +26,13 @@ void TIM4_GPIO_Configuration(void)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;            /* 返回电平引脚PB8 */
-    /* 设置定时器 */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; /* 浮空输入 */
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    /* GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; /\* 浮空输入 *\/ */
     GPIO_Init(GPIOB, &GPIO_InitStructure);          /* 初始化设置好的引脚 */
 }
 
-void tim4_init(void)
+void timer4_init(void)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_ICInitTypeDef TIM_ICInitStructure;
@@ -42,7 +42,7 @@ void tim4_init(void)
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
-    TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
+    TIM_ICInitStructure.TIM_Channel = TIM_Channel_3;
     TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
@@ -58,7 +58,8 @@ void tim4_init(void)
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 
     /* 选择TIM4输入触发源；TIM经滤波定时器输入2 */
-    TIM_SelectInputTrigger(TIM4, TIM_TS_ETRF);
+    /* TIM_SelectInputTrigger(TIM4, TIM_TS_ETRF); */
+    TIM_SelectInputTrigger(TIM4, TIM_TS_TI2FP2);
     /* 选择从机模式：复位模式 */
     TIM_SelectSlaveMode(TIM4, TIM_SlaveMode_Reset);
     /* 开启复位模式 */
@@ -80,11 +81,12 @@ void tim4_init(void)
 
 void TIM4_IRQHandler(void)
 {
-    usart1_send_str("in interrrupt!\r\n");
-
-    if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
-    {
-
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
-    }
+
+    usart1_send_str("4!\r\n");
+
+    /* if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET) */
+    /* { */
+
+    /* } */
 }

@@ -15,6 +15,7 @@
 #include "usart1.h"
 /* #include "timer.h" */
 #include "timer2.h"
+#include "timer4.h"
 #include "led.h"
 #include "adc_dma.h"
 #include "systick.h"
@@ -51,7 +52,7 @@ void task_init(void)
     /* tim2_init();               */  /* 定时器2的初始化 */
     /* tim2_init();                /\* 捕获初始化 *\/ */
 
-    tim4_init(); /* 定时器4的初始化 */
+    timer4_init(); /* 定时器4的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
 
