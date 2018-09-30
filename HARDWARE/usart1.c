@@ -404,3 +404,33 @@ void usart1_action(u8 *buf, u8 len)
 {
     usart1_send_str(buf);
 }
+
+/**
+ * 串口1发送u16型号的数据的函数
+ * 发送自带换行
+ * @param[in]   *data 发送的数组
+ * @param[out]  无
+ * @retval  OK  成功
+ * @retval  ERROR   错误
+ * @par 标识符
+ *      保留
+ * @par 其它
+ *      无
+ * @par 修改日志
+ *      文劲松于2018-09-28创建
+ */
+void usart1_send_str_u16(u16 data)
+{
+    u8 buf[9];
+
+    buf[0] = data / 10000 % 10 + '0';
+    buf[1] = data / 1000 % 10 + '0';
+    buf[2] = data / 100 % 10 + '0';
+    buf[3] = data / 10 % 10 + '0';
+    buf[4] = data % 10 + '0';
+    buf[5] = '\r';
+    buf[6] = '\n';
+    buf[7] = '\0';
+
+    usart1_send_str(buf);
+}

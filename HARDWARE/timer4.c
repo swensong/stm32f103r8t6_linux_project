@@ -3,7 +3,15 @@
 #include "sys.h"
 #include "usart1.h"
 
-#define PIN	PBin(8)
+#define PIN	PBin(7)
+//上面初始化
+//以下进行频率和占空比捕获
+uint32_t TimeDisplay;
+uint16_t IC2Value1;
+uint16_t IC2Value2;
+uint16_t DutyCycle;
+uint32_t Frequency;
+
 
 void TIM4_NVIC_Configuration(void)
 {
@@ -79,41 +87,30 @@ void timer4_init(void)
     /* TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); */
 }
 
-//上面初始化
-//以下进行频率和占空比捕获
-extern __IO uint32_t TimeDisplay;
-extern __IO uint16_t IC2Value;
-extern __IO uint16_t DutyCycle;
-extern __IO uint32_t Frequency;
 
 void TIM4_IRQHandler(void)
 {
-    u8 IC2Value_buf[9];
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC2);
 
 
     /* Get the Input Capture value */
-    IC2Value = TIM_GetCapture2(TIM4);
+    IC2Value1 = TIM_GetCapture2(TIM4);
 
-    if (IC2Value != 0)
+    if (IC2Value1 != 0)
     {
         /* Duty cycle computation */
-        DutyCycle = (TIM_GetCapture1(TIM4) * 100) / IC2Value;
+        IC2Value2 = TIM_GetCapture1(TIM4);
+        DutyCycle = IC2Value2 - IC2Value1;
 
         /* Frequency computation */
-        Frequency = 1000000 / (IC2Value + 1);
+        /* Frequency = 1000000 / (IC2Value + 1); */
 
-        IC2Value_buf[0] = IC2Value / 10000 % 10 + '0';
-        IC2Value_buf[1] = IC2Value / 1000 % 10 + '0';
-        IC2Value_buf[2] = IC2Value / 100 % 10 + '0';
-        IC2Value_buf[3] = IC2Value / 10 % 10 + '0';
-        IC2Value_buf[4] = IC2Value % 10 + '0';
-        IC2Value_buf[5] = '\r';
-        IC2Value_buf[6] = '\n';
-        IC2Value_buf[7] = '\0';
-
-        usart1_send_str("interrupt!\r\n");
-        usart1_send_str(IC2Value_buf);
+        usart1_send_str("IC2Value1: ");
+        usart1_send_str_u16(IC2Value1);
+        usart1_send_str("IC2Value2: ");
+        usart1_send_str_u16(IC2Value2);
+        usart1_send_str("the DutyCycle: ");
+        usart1_send_str_u16(DutyCycle);
     }
     else
     {
