@@ -405,13 +405,21 @@ u8 Cmp_Memory( u8 *ptr1, u8 *ptr2, u16 len )
  */
 void usart1_action(u8 *buf, u8 len)
 {
+    /*
+      实验原因1：是否是因为无法触发才无法使用，
+      实验过程：多次使用串口触发功能，均无法触发接收。
+     */
+    /*
+      实验原因2：是否因为模块电量不足无法触发
+      实验结果：超声波能够正常触发中断，但是触发时间过短
+     */
     usart1_send_str(buf);
 
     if (buf[0] == 'a')
     {
         timer4_init(); /* 定时器4的初始化 */
         LED1 = 0;
-        delay_us(5);
+        delay_us(10);
         LED1 = 1;
         LED1 = 0;
         delay_ms(5);
@@ -421,7 +429,7 @@ void usart1_action(u8 *buf, u8 len)
     {
         timer4_init(); /* 定时器4的初始化 */
         LED1 = 0;
-        delay_us(6);
+        delay_us(11);
         LED1 = 1;
         LED1 = 0;
         delay_ms(5);
@@ -431,7 +439,7 @@ void usart1_action(u8 *buf, u8 len)
     {
         timer4_init(); /* 定时器4的初始化 */
         LED1 = 0;
-        delay_us(7);
+        delay_us(12);
         LED1 = 1;
         LED1 = 0;
         delay_ms(5);
@@ -441,7 +449,7 @@ void usart1_action(u8 *buf, u8 len)
     {
         timer4_init(); /* 定时器4的初始化 */
         LED1 = 0;
-        delay_us(8);
+        delay_us(13);
         LED1 = 1;
         LED1 = 0;
         delay_ms(5);
