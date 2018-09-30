@@ -45,9 +45,11 @@ void task_init(void)
     u8 buf[] = "init success!\r\n";
 
     led_init();                 /* LED灯的初始化 */
+    LED1 = 1;
+
     adc1_init();                /* ADC采集数据的初始化 */
 
-    /* systick_init(); */
+    systick_init();
 
     /* tim2_init();               */  /* 定时器2的初始化 */
     /* tim2_init();                /\* 捕获初始化 *\/ */
@@ -58,6 +60,10 @@ void task_init(void)
 
     usart1_send_str(buf); /* 发送初始化成功的串口字符 */
 
+    delay_ms(100);
+    LED1 = 0;
+    delay_us(10);
+    LED1 = 1;
 }
 
 /**

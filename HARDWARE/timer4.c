@@ -25,7 +25,7 @@ void TIM4_GPIO_Configuration(void)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;            /* 返回电平引脚PB8 */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;            /* 返回电平引脚PB7 */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     /* GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; /\* 浮空输入 *\/ */
@@ -42,7 +42,7 @@ void timer4_init(void)
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
-    TIM_ICInitStructure.TIM_Channel = TIM_Channel_3;
+    TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
     TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
@@ -67,8 +67,8 @@ void timer4_init(void)
     /* 开启CC3中断 */
     TIM_Cmd(TIM4, ENABLE);
     /* 开启CC2中断 */
-    TIM_ITConfig(TIM4, TIM_IT_CC3, ENABLE);
-    /* 开启CC3中断 */
+    TIM_ITConfig(TIM4, TIM_IT_CC2, ENABLE);
+    /* 开启CC2中断 */
     TIM_Cmd(TIM4, ENABLE);
 
     /* 好像打错了 */
@@ -79,14 +79,47 @@ void timer4_init(void)
     /* TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); */
 }
 
+//上面初始化
+//以下进行频率和占空比捕获
+extern __IO uint32_t TimeDisplay;
+extern __IO uint16_t IC2Value;
+extern __IO uint16_t DutyCycle;
+extern __IO uint32_t Frequency;
+
 void TIM4_IRQHandler(void)
 {
-    TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
+    u8 IC2Value_buf[9];
+    TIM_ClearITPendingBit(TIM4, TIM_IT_CC2);
 
-    usart1_send_str("4!\r\n");
 
-    /* if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET) */
-    /* { */
+    /* Get the Input Capture value */
+    IC2Value = TIM_GetCapture2(TIM4);
 
-    /* } */
+    if (IC2Value != 0)
+    {
+        /* Duty cycle computation */
+        DutyCycle = (TIM_GetCapture1(TIM4) * 100) / IC2Value;
+
+        /* Frequency computation */
+        Frequency = 1000000 / (IC2Value + 1);
+
+        IC2Value_buf[0] = IC2Value / 10000 % 10 + '0';
+        IC2Value_buf[1] = IC2Value / 1000 % 10 + '0';
+        IC2Value_buf[2] = IC2Value / 100 % 10 + '0';
+        IC2Value_buf[3] = IC2Value / 10 % 10 + '0';
+        IC2Value_buf[4] = IC2Value % 10 + '0';
+        IC2Value_buf[5] = '\r';
+        IC2Value_buf[6] = '\n';
+        IC2Value_buf[7] = '\0';
+
+        usart1_send_str("interrupt!\r\n");
+        usart1_send_str(IC2Value_buf);
+    }
+    else
+    {
+        DutyCycle = 0;
+        Frequency = 0;
+    }
+
+    //usart1_send_str("中断!\r\n");
 }
