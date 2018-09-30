@@ -5,8 +5,8 @@
 #include "sys.h"
 
 /* 定义PA5为LD2灯的接口 */
-#define LED PAout(5)
-#define LED1 PCout(13)
+#define LED1 PAout(5)
+#define LED PCout(13)
 
 /**	当表示为LIGHT时候LED灯点亮，当表示为DARK时候LED灯点亮 */
 #define LIGHT 1

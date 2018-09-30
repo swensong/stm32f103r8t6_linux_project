@@ -13,7 +13,7 @@
 #include "task.h"
 
 #include "usart1.h"
-/* #include "timer.h" */
+#include "timer.h"
 #include "timer4.h"
 #include "led.h"
 #include "adc_dma.h"
@@ -43,22 +43,12 @@ void task_init(void)
 
     systick_init();
 
-    /* tim2_init();               */  /* 定时器2的初始化 */
-    /* tim2_init();                /\* 捕获初始化 *\/ */
-
+    tim2_init();            /* 定时器2的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
 
     usart1_send_str(buf); /* 发送初始化成功的串口字符 */
 
-    timer4_init(); /* 定时器4的初始化 */
-//    delay_ms(1);
-//    LED1 = 1;
-//    TIM_Cmd(TIM4, ENABLE);
-    delay_us(40);
-    LED1 = 1;
-    LED1 = 0;
-    /* LED1 = 1; */
 }
 
 /**

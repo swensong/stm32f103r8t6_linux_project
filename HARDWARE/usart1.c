@@ -11,6 +11,9 @@
  *   version: 2018.9.28
  */
 #include "usart1.h"
+#include "timer4.h"
+#include "led.h"
+#include "systick.h"
 
 
 /* 初始化时钟 */
@@ -403,6 +406,48 @@ u8 Cmp_Memory( u8 *ptr1, u8 *ptr2, u16 len )
 void usart1_action(u8 *buf, u8 len)
 {
     usart1_send_str(buf);
+
+    if (buf[0] == 'a')
+    {
+        timer4_init(); /* 定时器4的初始化 */
+        LED1 = 0;
+        delay_us(5);
+        LED1 = 1;
+        LED1 = 0;
+        delay_ms(5);
+        TIM_DeInit(TIM4);
+    }
+    else if (buf[0] == 'b')
+    {
+        timer4_init(); /* 定时器4的初始化 */
+        LED1 = 0;
+        delay_us(6);
+        LED1 = 1;
+        LED1 = 0;
+        delay_ms(5);
+        TIM_DeInit(TIM4);
+    }
+    else if (buf[0] == 'c')
+    {
+        timer4_init(); /* 定时器4的初始化 */
+        LED1 = 0;
+        delay_us(7);
+        LED1 = 1;
+        LED1 = 0;
+        delay_ms(5);
+        TIM_DeInit(TIM4);
+    }
+    else if (buf[0] == 'd')
+    {
+        timer4_init(); /* 定时器4的初始化 */
+        LED1 = 0;
+        delay_us(8);
+        LED1 = 1;
+        LED1 = 0;
+        delay_ms(5);
+        TIM_DeInit(TIM4);
+    }
+
 }
 
 /**
