@@ -51,7 +51,7 @@ void timer4_init(void)
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
     TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
-    TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
+    TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Falling;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
     TIM_ICInitStructure.TIM_ICFilter = 0x00;
@@ -90,20 +90,55 @@ void timer4_init(void)
 
 void TIM4_IRQHandler(void)
 {
+    static u8 time_cnt = 0;
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC2);
 
+    usart1_send_str("in interrupt!\r\n");
 
-    /* Get the Input Capture value */
-    IC2Value1 = TIM_GetCapture2(TIM4);
+    if (0 == time_cnt)
+    {
+        /* Get the Input Capture value */
+        IC2Value1 = TIM_GetCapture2(TIM4);
 
+        usart1_send_str("first_IC2Value1: ");
+        usart1_send_str_u16(IC2Value1);
+        time_cnt = 1;
+    }
+    else if (1 == time_cnt)
+    {
+        /* Get the Input Capture value */
+        IC2Value1 = TIM_GetCapture2(TIM4);
+
+        usart1_send_str("first_IC2Value2: ");
+        usart1_send_str_u16(IC2Value1);
+        time_cnt = 2;
+    }
+    else if (2 == time_cnt)
+    {
+        /* Get the Input Capture value */
+        IC2Value1 = TIM_GetCapture2(TIM4);
+
+        usart1_send_str("first_IC2Value3: ");
+        usart1_send_str_u16(IC2Value1);
+        time_cnt = 3;
+    }
+    else if (3 == time_cnt)
+    {
+        /* Get the Input Capture value */
+        IC2Value1 = TIM_GetCapture2(TIM4);
+
+        usart1_send_str("first_IC2Value4: ");
+        usart1_send_str_u16(IC2Value1);
+        time_cnt = 0;
+    }
+
+
+    /*
     if (IC2Value1 != 0)
     {
-        /* Duty cycle computation */
         IC2Value2 = TIM_GetCapture1(TIM4);
         DutyCycle = IC2Value2 - IC2Value1;
 
-        /* Frequency computation */
-        /* Frequency = 1000000 / (IC2Value + 1); */
 
         usart1_send_str("IC2Value1: ");
         usart1_send_str_u16(IC2Value1);
@@ -117,6 +152,7 @@ void TIM4_IRQHandler(void)
         DutyCycle = 0;
         Frequency = 0;
     }
+*/
 
     //usart1_send_str("中断!\r\n");
 }
