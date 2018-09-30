@@ -11,7 +11,8 @@ void tim2_init(void)
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    /* GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; /* 浮空输入 */
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
     GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -54,6 +55,7 @@ void TIM2_IRQHandler(void)
 {
     /* Clear TIM3 Capture compare interrupt pending bit */
     TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
+    usart1_send_str("in the interrupt!\r\n");
 
     /* Get the Input Capture value */
     IC2Value = TIM_GetCapture2(TIM2);

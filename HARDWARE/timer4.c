@@ -26,6 +26,8 @@ void TIM4_GPIO_Configuration(void)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;            /* 返回电平引脚PB8 */
+    /* 设置定时器 */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; /* 浮空输入 */
     GPIO_Init(GPIOB, &GPIO_InitStructure);          /* 初始化设置好的引脚 */
 }
@@ -38,18 +40,31 @@ void tim4_init(void)
     TIM4_GPIO_Configuration();
     TIM4_NVIC_Configuration();
 
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
     TIM_ICInitStructure.TIM_Channel = TIM_Channel_2;
     TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
     TIM_ICInitStructure.TIM_ICFilter = 0x00;
+
     TIM_PWMIConfig(TIM4, &TIM_ICInitStructure);
+
+    TIM_TimeBaseStructure.TIM_Period = 0xFFFF;
+    TIM_TimeBaseStructure.TIM_Prescaler = 71;
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+
+    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+
     /* 选择TIM4输入触发源；TIM经滤波定时器输入2 */
     TIM_SelectInputTrigger(TIM4, TIM_TS_ETRF);
     /* 选择从机模式：复位模式 */
     TIM_SelectSlaveMode(TIM4, TIM_SlaveMode_Reset);
     /* 开启复位模式 */
     TIM_SelectMasterSlaveMode(TIM4, TIM_MasterSlaveMode_Enable);
+    /* 开启CC3中断 */
+    TIM_Cmd(TIM4, ENABLE);
     /* 开启CC2中断 */
     TIM_ITConfig(TIM4, TIM_IT_CC3, ENABLE);
     /* 开启CC3中断 */
@@ -65,11 +80,11 @@ void tim4_init(void)
 
 void TIM4_IRQHandler(void)
 {
-    usart1_send_str("in interrrupt!");
+    usart1_send_str("in interrrupt!\r\n");
 
-    /* if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET) */
-    /* { */
+    if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
+    {
 
     TIM_ClearITPendingBit(TIM4, TIM_IT_CC3);
-    /* } */
+    }
 }

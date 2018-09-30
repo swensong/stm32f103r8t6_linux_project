@@ -49,9 +49,9 @@ void task_init(void)
     /* systick_init(); */
 
     /* tim2_init();               */  /* 定时器2的初始化 */
-    tim2_init();                /* 捕获初始化 */
+    /* tim2_init();                /\* 捕获初始化 *\/ */
 
-    /* tim4_init();                */ /* 定时器4的初始化 */
+    tim4_init(); /* 定时器4的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
 
