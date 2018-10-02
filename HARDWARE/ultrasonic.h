@@ -4,6 +4,10 @@
 #include "stm32f10x.h"
 #include "led.h"
 
+/*
+  PB5 作为触发口
+  PB4 作为接收触发口
+ */
 #define TRIG	PBout(5)
 
 void ultrasonic_init(void);
