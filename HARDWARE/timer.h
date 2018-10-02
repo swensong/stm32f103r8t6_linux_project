@@ -11,5 +11,8 @@
 /* 触发频率为1KHz */
 
 void tim2_init(void);
+void tim4_init(void);
+
+u16 get_tim4_time(void);
 
 #endif

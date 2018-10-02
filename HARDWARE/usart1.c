@@ -12,6 +12,7 @@
  */
 #include "usart1.h"
 #include "led.h"
+#include "timer.h"
 #include "systick.h"
 
 
@@ -404,6 +405,7 @@ u8 Cmp_Memory( u8 *ptr1, u8 *ptr2, u16 len )
  */
 void usart1_action(u8 *buf, u8 len)
 {
+    u16 temp = 0;
     /*
       实验原因1：是否是因为无法触发才无法使用，
       实验过程：多次使用串口触发功能，均无法触发接收。
@@ -416,6 +418,10 @@ void usart1_action(u8 *buf, u8 len)
 
     if (buf[0] == 'a')
     {
+        temp = get_tim4_time();
+        usart1_send_str("the value is :");
+        usart1_send_str_u16(temp);
+
     }
     else if (buf[0] == 'b')
     {

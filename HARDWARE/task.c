@@ -38,13 +38,15 @@ void task_init(void)
 {
     u8 buf[] = "init success!\r\n";
 
-    // led_init();                 /* LED灯的初始化 */
+    led_init();                 /* LED灯的初始化 */
 
     adc1_init();                /* ADC采集数据的初始化 */
 
     systick_init();
 
     tim2_init();            /* 定时器2的初始化 */
+
+    tim4_init();                /* 定时器4的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
 
