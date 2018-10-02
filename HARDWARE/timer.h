@@ -10,6 +10,11 @@
 /* 定时器触发周期 72000000 / 72 / 1000 = 1000 */
 /* 触发频率为1KHz */
 
+/* 设置定时器的频率 */
+#define	TIME4_PRESCALER 72;
+/* 0 < TIME4_PERIOD < 65536 */
+#define TIME4_PERIOD  50000
+
 void tim2_init(void);
 void tim4_init(void);
 

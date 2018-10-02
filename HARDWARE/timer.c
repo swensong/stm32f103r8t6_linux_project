@@ -129,7 +129,7 @@ static void TIM4_Configuration(void)
     TIM_InternalClockConfig(TIM4);
 
     //设置预先分频系数为7200-1, 计数器时钟为72000000/7200 = 10KHz
-    TIM_TimeBaseStructure.TIM_Prescaler = 72000 - 1;
+    TIM_TimeBaseStructure.TIM_Prescaler = TIME4_PRESCALER - 1;
 
     //设置时钟分割
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -138,7 +138,7 @@ static void TIM4_Configuration(void)
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
     //设置计数溢出大小，每计1000个数就产生一个更新事件
-    TIM_TimeBaseStructure.TIM_Period = 1000;
+    TIM_TimeBaseStructure.TIM_Period = TIME4_PERIOD;
     //将配置应用到TIM2中
     TIM_TimeBaseInit(TIM4,&TIM_TimeBaseStructure);
 
@@ -186,7 +186,7 @@ void TIM4_IRQHandler(void)
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
 
-        led_flash_light(2, ENABLE);
+        led_flash_light(20, ENABLE);
 
         //清除TIM2的中断待处理位
         TIM_ClearITPendingBit(TIM4 , TIM_FLAG_Update);

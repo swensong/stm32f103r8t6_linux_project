@@ -2,6 +2,7 @@
 #include "exti.h"
 
 #include "usart1.h"
+#include "timer.h"
 
  /**
   * @brief  配置嵌套向量中断控制器NVIC
@@ -57,6 +58,9 @@ void EXTI_PB4_Config(void)
 void EXTI4_IRQHandler(void)
 {
     static u8 IO_station = 0;
+    static u16 data1 = 0;
+    static u16 data2 = 0;
+    static u16 temp = 0;
 
     if(EXTI_GetITStatus(EXTI_Line4) != RESET) //确保是否产生了EXTI Line中断
     {
@@ -66,7 +70,7 @@ void EXTI4_IRQHandler(void)
             IO_station = 1;
 
             // 串口发送接收到数据
-//            usart1_send_str("interrupt!\r\n");
+            data1 = get_tim4_time();
             EXTI_ClearITPendingBit(EXTI_Line4);     //清除中断标志位
         }
         else if (1 == IO_station)
@@ -74,8 +78,19 @@ void EXTI4_IRQHandler(void)
             /* 高变低 */
             IO_station = 0;
 
+            data2 = get_tim4_time();
+
+            if (data2 > data1)
+            {
+                temp = data2 - data1;
+            }
+            else
+            {
+                temp = 5000 - (data1 - data2);
+            }
             // 串口发送接收到数据
-            usart1_send_str("interrupt!\r\n");
+            usart1_send_str("\r\nthe data exit : ");
+            usart1_send_str_u16(temp);
             EXTI_ClearITPendingBit(EXTI_Line4);     //清除中断标志位
         }
     }

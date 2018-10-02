@@ -418,10 +418,7 @@ void usart1_action(u8 *buf, u8 len)
 
     if (buf[0] == 'a')
     {
-        temp = get_tim4_time();
-        usart1_send_str("the value is :");
-        usart1_send_str_u16(temp);
-
+        led_hc_sr04();
     }
     else if (buf[0] == 'b')
     {
