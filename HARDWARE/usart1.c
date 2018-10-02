@@ -11,7 +11,6 @@
  *   version: 2018.9.28
  */
 #include "usart1.h"
-#include "timer4.h"
 #include "led.h"
 #include "systick.h"
 
@@ -417,43 +416,15 @@ void usart1_action(u8 *buf, u8 len)
 
     if (buf[0] == 'a')
     {
-        timer4_init(); /* 定时器4的初始化 */
-        LED1 = 0;
-        delay_us(10);
-        LED1 = 1;
-        LED1 = 0;
-        delay_ms(5);
-        TIM_DeInit(TIM4);
     }
     else if (buf[0] == 'b')
     {
-        timer4_init(); /* 定时器4的初始化 */
-        LED1 = 0;
-        delay_us(11);
-        LED1 = 1;
-        LED1 = 0;
-        delay_ms(5);
-        TIM_DeInit(TIM4);
     }
     else if (buf[0] == 'c')
     {
-        timer4_init(); /* 定时器4的初始化 */
-        LED1 = 0;
-        delay_us(12);
-        LED1 = 1;
-        LED1 = 0;
-        delay_ms(5);
-        TIM_DeInit(TIM4);
     }
     else if (buf[0] == 'd')
     {
-        timer4_init(); /* 定时器4的初始化 */
-        LED1 = 0;
-        delay_us(13);
-        LED1 = 1;
-        LED1 = 0;
-        delay_ms(5);
-        TIM_DeInit(TIM4);
     }
 
 }

@@ -12,6 +12,8 @@
  */
 #include "led.h"
 
+#include "systick.h"
+
 /**
  * led灯的初始化函数
  *
@@ -76,5 +78,19 @@ void led_flash_light(u16 time, u8 led_enable)
     }
 }
 
+void led_hc_sr04(u8 time)
+{
+    u8 i = 0;
+
+    for (i = 0; i < time; i++)
+    {
+        LED1 = 0;
+        delay_us(11);
+        LED1 = 1;
+        LED1 = 0;
+        delay_ms(20);
+
+    }
+}
 
 

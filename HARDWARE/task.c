@@ -14,10 +14,11 @@
 
 #include "usart1.h"
 #include "timer.h"
-#include "timer4.h"
 #include "led.h"
 #include "adc_dma.h"
 #include "systick.h"
+
+#include "exti.h"
 
 /**
  * 用于main函数的初始化
@@ -37,7 +38,7 @@ void task_init(void)
 {
     u8 buf[] = "init success!\r\n";
 
-    led_init();                 /* LED灯的初始化 */
+    // led_init();                 /* LED灯的初始化 */
 
     adc1_init();                /* ADC采集数据的初始化 */
 
@@ -46,6 +47,8 @@ void task_init(void)
     tim2_init();            /* 定时器2的初始化 */
 
     usart1_init(115200);        /* 串口的初始化 */
+
+    EXTI_PB4_Config();
 
     usart1_send_str(buf); /* 发送初始化成功的串口字符 */
 
