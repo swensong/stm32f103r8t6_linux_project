@@ -14,6 +14,7 @@
 #include "led.h"
 #include "timer.h"
 #include "systick.h"
+#include "ultrasonic.h"
 
 
 /* 初始化时钟 */
@@ -406,6 +407,7 @@ u8 Cmp_Memory( u8 *ptr1, u8 *ptr2, u16 len )
 void usart1_action(u8 *buf, u8 len)
 {
     u16 temp = 0;
+    float distance = 0;
     /*
       实验原因1：是否是因为无法触发才无法使用，
       实验过程：多次使用串口触发功能，均无法触发接收。
@@ -418,7 +420,8 @@ void usart1_action(u8 *buf, u8 len)
 
     if (buf[0] == 'a')
     {
-        led_hc_sr04();
+        distance = get_ultrasonic_distanse();
+        usart1_send_str_float(distance);
     }
     else if (buf[0] == 'b')
     {
@@ -461,3 +464,26 @@ void usart1_send_str_u16(u16 data)
 
     usart1_send_str(buf);
 }
+
+void usart1_send_str_float(float data)
+{
+    u8 buf[11];
+    u32 temp = 0;
+
+    temp = (u32)(data * 100);
+
+    buf[0] = temp / 1000000 % 10 + '0';
+    buf[1] = temp / 100000 % 10 + '0';
+    buf[2] = temp / 10000 % 10 + '0';
+    buf[3] = temp / 1000 % 10 + '0';
+    buf[4] = temp / 100 % 10 + '0';
+    buf[5] = '.';
+    buf[6] = temp / 10 % 10 + '0';
+    buf[7] = temp % 10 + '0';
+    buf[8] = '\r';
+    buf[9] = '\n';
+    buf[10] = '\0';
+
+    usart1_send_str(buf);
+}
+

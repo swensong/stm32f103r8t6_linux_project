@@ -1,9 +1,25 @@
 
 #include "ultrasonic.h"
+#include "systick.h"
+#include "led.h"
 
 // 采集到的数据，单位为0.1mm
 __IO u16 display_distance = 0;
 
+static void ultrasonic_PB5_init(void)
+{
+    GPIO_InitTypeDef  GPIO_InitStructure;
+
+    RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOB , ENABLE );
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+
+    GPIO_Init( GPIOB, &GPIO_InitStructure );
+
+    TRIG = 0;
+}
 
 static void TIM4_NVIC_Configuration(void)
 {
@@ -30,7 +46,7 @@ static void TIM4_Configuration(void)
     TIM_InternalClockConfig(TIM4);
 
     //设置预先分频系数为7200-1, 计数器时钟为72000000/7200 = 10KHz
-    TIM_TimeBaseStructure.TIM_Prescaler = TIME4_PRESCALER - 1;
+    TIM_TimeBaseStructure.TIM_Prescaler = 71;
 
     //设置时钟分割
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -39,7 +55,7 @@ static void TIM4_Configuration(void)
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
     //设置计数溢出大小，每计1000个数就产生一个更新事件
-    TIM_TimeBaseStructure.TIM_Period = TIME4_PERIOD;
+    TIM_TimeBaseStructure.TIM_Period = 50000;
     //将配置应用到TIM2中
     TIM_TimeBaseInit(TIM4,&TIM_TimeBaseStructure);
 
@@ -188,7 +204,7 @@ void EXTI4_IRQHandler(void)
                 temp = 5000 - (data1 - data2);
             }
             // 串口发送接收到数据
-            usart1_send_str("\r\nthe data exit : ");
+            //usart1_send_str("\r\nthe data exit : ");
             temp = ((temp * 10) * 0.34) / 2;
             display_distance = temp;
             //usart1_send_str_u16(temp);
@@ -201,6 +217,8 @@ void EXTI4_IRQHandler(void)
 
 void ultrasonic_init(void)
 {
+    ultrasonic_PB5_init();
+
     /* 打开外部中断测量时间 */
     EXTI_PB4_Config();
 
@@ -217,4 +235,23 @@ float get_ultrasonic_distanse(void)
     distance = temp / 100;
 
     return distance;
+}
+
+void ultrasonic_time(void)
+{
+    TRIG = 0;
+    TRIG = 1;
+    delay_us(11);
+    TRIG = 0;
+}
+
+void ultrasonic_monitor(u16 time)
+{
+    static u16 i = 0;
+
+    if (i++ > time)
+    {
+        i = 0;
+        ultrasonic_time();
+    }
 }
