@@ -15,5 +15,6 @@
 void led_init(void);
 void led_flash_light(u16 time, u8 led_enable);
 void led_hc_sr04(void);
+void led_hcsr04_time(u16 time);
 
 #endif

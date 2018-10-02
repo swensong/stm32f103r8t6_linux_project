@@ -98,6 +98,7 @@ void TIM2_IRQHandler(void)
         usart1_rx_monitor(1);
 
 //        led_flash_light(1000, ENABLE);
+        led_hcsr04_time(10);
 
         //清除TIM2的中断待处理位
         TIM_ClearITPendingBit(TIM2 , TIM_FLAG_Update);

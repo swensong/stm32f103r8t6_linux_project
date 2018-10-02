@@ -87,3 +87,13 @@ void led_hc_sr04(void)
 }
 
 
+void led_hcsr04_time(u16 time)
+{
+    static u16 i = 0;
+
+    if (i++ > time)
+    {
+        i = 0;
+        led_hc_sr04();
+    }
+}

@@ -71,7 +71,6 @@ void EXTI4_IRQHandler(void)
 
             // 串口发送接收到数据
             data1 = get_tim4_time();
-            EXTI_ClearITPendingBit(EXTI_Line4);     //清除中断标志位
         }
         else if (1 == IO_station)
         {
@@ -90,9 +89,11 @@ void EXTI4_IRQHandler(void)
             }
             // 串口发送接收到数据
             usart1_send_str("\r\nthe data exit : ");
+            temp = ((temp * 10) * 0.34) / 2;
             usart1_send_str_u16(temp);
-            EXTI_ClearITPendingBit(EXTI_Line4);     //清除中断标志位
         }
+
+        EXTI_ClearITPendingBit(EXTI_Line4);     //清除中断标志位
     }
 }
 
